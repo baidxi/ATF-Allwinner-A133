@@ -16,9 +16,17 @@
 #include <sunxi_mmap.h>
 #include <sunxi_private.h>
 
-static const mmap_region_t sunxi_mmap[MAX_STATIC_MMAP_REGIONS + 1] = {
+static const mmap_region_t sunxi_mmap[MAX_STATIC_MMAP_REGIONS + 1 
+#ifdef SUNXI_SRAM_A2_BASE
++1
+#endif
+] = {
 	MAP_REGION_FLAT(SUNXI_SRAM_BASE, SUNXI_SRAM_SIZE,
 			MT_DEVICE | MT_RW | MT_SECURE | MT_EXECUTE_NEVER),
+	#ifdef SUNXI_SRAM_A2_BASE
+	MAP_REGION_FLAT(SUNXI_SRAM_A2_BASE, SUNXI_SRAM_A2_SIZE,
+			MT_DEVICE | MT_RW | MT_SECURE | MT_EXECUTE_NEVER),
+	#endif
 	MAP_REGION_FLAT(SUNXI_DEV_BASE, SUNXI_DEV_SIZE,
 			MT_DEVICE | MT_RW | MT_SECURE | MT_EXECUTE_NEVER),
 	MAP_REGION(PRELOADED_BL33_BASE, SUNXI_BL33_VIRT_BASE,
@@ -128,6 +136,11 @@ int sunxi_init_platform_r_twi(uint16_t socid, bool use_rsb)
 	case SUNXI_SOC_A64:
 		pin_func = use_rsb ? 0x22 : 0x33;
 		device_bit = use_rsb ? BIT(3) : BIT(6);
+		break;
+	case SUNXI_SOC_A133:
+		pin_func = use_rsb ? 0x22 : 0x33;
+		device_bit = BIT(16);
+		reset_offset = use_rsb ? 0x1bc : 0x19c;
 		break;
 	default:
 		INFO("R_I2C/RSB on Allwinner 0x%x SoC not supported\n", socid);

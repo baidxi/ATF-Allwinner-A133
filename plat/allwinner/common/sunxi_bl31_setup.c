@@ -130,6 +130,9 @@ void bl31_platform_setup(void)
 	case SUNXI_SOC_R329:
 		soc_name = "R329";
 		break;
+	case SUNXI_SOC_A133:
+		soc_name = "A133";
+		break;
 	default:
 		soc_name = "unknown";
 		break;
@@ -176,6 +179,9 @@ void bl31_platform_setup(void)
 	 */
 	if (soc_id == SUNXI_SOC_A64 || soc_id == SUNXI_SOC_H5)
 		mmio_write_32(SUNXI_CCU_BASE + 0x5c, 0x1);
+
+	if (soc_id == SUNXI_SOC_A64)
+		mmio_write_32(SUNXI_CCU_BASE + 0x510, 0x03000002);
 
 	sunxi_pmic_setup(soc_id, fdt);
 
