@@ -112,3 +112,5 @@ RESET_TO_BL31			:=	1
 
 # This platform is single-cluster and does not require coherency setup.
 WARMBOOT_ENABLE_DCACHE_EARLY	:=	1
+
+TF_LDFLAGS += --no-warn-rwx-segments
